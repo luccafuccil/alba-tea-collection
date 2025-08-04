@@ -41,11 +41,10 @@ const FilterButton: React.FC<FilterButtonProps> = ({
       onClick={onClick}
       className={cn(
         "inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200",
-        "border border-gray-200 hover:border-primary-green",
         isActive
-          ? "bg-primary-green text-text-color border-primary-green"
-          : "bg-white text-text-color hover:bg-gray-50",
-        "focus:outline-none focus:ring-2 focus:ring-primary-green focus:ring-offset-2",
+          ? "bg-(--primary-green) text-(--primary-brown)"
+          : "bg-white text-(--primary-brown) hover:bg-gray-50 hover:border-(--primary-green)",
+        "focus:outline-none focus:ring-2 focus:ring-(--primary-green) focus:ring-offset-2",
         className
       )}
     >

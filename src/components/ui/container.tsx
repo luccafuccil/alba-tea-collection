@@ -48,21 +48,11 @@ export const Container: React.FC<ContainerProps> = ({
 
 export const PageContainer: React.FC<{
   children: React.ReactNode;
-  gradient?: "home" | "closet" | "profile" | "none";
   className?: string;
-}> = ({ children, gradient = "none", className }) => {
-  const gradients = {
-    home: "bg-gradient-to-b from-primary-orange via-background-color to-background-color",
-    closet:
-      "bg-gradient-to-b from-primary-blue via-background-color to-background-color",
-    profile:
-      "bg-gradient-to-b from-primary-green via-background-color to-background-color",
-    none: "bg-background-color",
-  };
-
+}> = ({ children, className }) => {
   return (
-    <div className={cn("min-h-screen w-full", gradients[gradient], className)}>
-      <div className="pt-24 pb-12">{children}</div>
+    <div className={cn("min-h-screen w-full", className)}>
+      <div className="pt-20 pb-12">{children}</div>
     </div>
   );
 };

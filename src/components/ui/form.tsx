@@ -2,6 +2,7 @@ import React, { useState, useCallback } from "react";
 import { cn } from "@/lib/utils";
 import { FormField } from "@/lib/types";
 import { Button } from "./button";
+import { generateShortId } from "@/lib/id-generator";
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   error?: string;
@@ -17,14 +18,14 @@ export const Input: React.FC<InputProps> = ({
   id,
   ...props
 }) => {
-  const inputId = id || `input-${Math.random().toString(36).substr(2, 9)}`;
+  const inputId = id || generateShortId("input");
 
   return (
     <div className="space-y-2">
       {label && (
         <label
           htmlFor={inputId}
-          className="block text-sm font-medium text-text-color font-body"
+          className="block text-sm text-(--primary-brown) font-body"
         >
           {label} {required && <span className="text-red-500">*</span>}
         </label>
@@ -33,8 +34,8 @@ export const Input: React.FC<InputProps> = ({
         id={inputId}
         className={cn(
           "w-full px-4 py-3 rounded-xl border transition-all duration-200",
-          "font-body text-text-color placeholder:text-text-color/50",
-          "focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-transparent",
+          "font-body text-(--primary-brown) placeholder:text-(--primary-brown)/50",
+          "focus:outline-none focus:ring-2 focus:ring-(--primary-green) focus:border-transparent",
           error
             ? "border-red-300 bg-red-50"
             : "border-gray-200 bg-white hover:border-gray-300",
@@ -62,15 +63,14 @@ export const Textarea: React.FC<TextareaProps> = ({
   id,
   ...props
 }) => {
-  const textareaId =
-    id || `textarea-${Math.random().toString(36).substr(2, 9)}`;
+  const textareaId = id || generateShortId("textarea");
 
   return (
     <div className="space-y-2">
       {label && (
         <label
           htmlFor={textareaId}
-          className="block text-sm font-medium text-text-color font-body"
+          className="block text-sm text-(--primary-brown) font-body"
         >
           {label} {required && <span className="text-red-500">*</span>}
         </label>
@@ -79,8 +79,8 @@ export const Textarea: React.FC<TextareaProps> = ({
         id={textareaId}
         className={cn(
           "w-full px-4 py-3 rounded-xl border transition-all duration-200",
-          "font-body text-text-color placeholder:text-text-color/50",
-          "focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-transparent",
+          "font-body text-(--primary-brown) placeholder:text-(--primary-brown)/50",
+          "focus:outline-none focus:ring-2 focus:ring-(--primary-green) focus:border-transparent",
           "resize-none min-h-[120px]",
           error
             ? "border-red-300 bg-red-50"
@@ -110,14 +110,14 @@ export const Select: React.FC<SelectProps> = ({
   id,
   ...props
 }) => {
-  const selectId = id || `select-${Math.random().toString(36).substr(2, 9)}`;
+  const selectId = id || generateShortId("select");
 
   return (
     <div className="space-y-2">
       {label && (
         <label
           htmlFor={selectId}
-          className="block text-sm font-medium text-text-color font-body"
+          className="block text-sm text-(--primary-brown) font-body"
         >
           {label} {required && <span className="text-red-500">*</span>}
         </label>
@@ -126,8 +126,8 @@ export const Select: React.FC<SelectProps> = ({
         id={selectId}
         className={cn(
           "w-full px-4 py-3 rounded-xl border transition-all duration-200",
-          "font-body text-text-color bg-white",
-          "focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-transparent",
+          "font-body text-(--primary-brown) bg-white",
+          "focus:outline-none focus:ring-2 focus:ring-(--primary-green) focus:border-transparent",
           "appearance-none cursor-pointer",
           error
             ? "border-red-300 bg-red-50"
@@ -159,8 +159,7 @@ export const Checkbox: React.FC<CheckboxProps> = ({
   id,
   ...props
 }) => {
-  const checkboxId =
-    id || `checkbox-${Math.random().toString(36).substr(2, 9)}`;
+  const checkboxId = id || generateShortId("checkbox");
 
   return (
     <div className="space-y-2">
@@ -170,7 +169,7 @@ export const Checkbox: React.FC<CheckboxProps> = ({
           type="checkbox"
           className={cn(
             "w-5 h-5 rounded border-2 border-gray-300",
-            "text-primary-green focus:ring-primary-green focus:ring-2",
+            "text-(--primary-green) focus:ring-(--primary-green) focus:ring-2",
             "transition-colors duration-200",
             className
           )}
@@ -178,7 +177,7 @@ export const Checkbox: React.FC<CheckboxProps> = ({
         />
         <label
           htmlFor={checkboxId}
-          className="text-sm font-medium text-text-color font-body cursor-pointer"
+          className="text-sm text-(--primary-brown) font-body cursor-pointer"
         >
           {label}
         </label>
@@ -352,7 +351,7 @@ export const Form = <T extends Record<string, any>>({
         case "checkbox-group":
           return (
             <div key={field.name} className="space-y-3">
-              <label className="block text-sm font-medium text-text-color font-body">
+              <label className="block text-sm text-(--primary-brown) font-body">
                 {field.label}{" "}
                 {field.required && <span className="text-red-500">*</span>}
               </label>
@@ -396,7 +395,9 @@ export const Form = <T extends Record<string, any>>({
     <form onSubmit={handleSubmit} className={cn("space-y-6", className)}>
       {title && (
         <div className="text-center">
-          <h2 className="text-2xl font-title text-text-color">{title}</h2>
+          <h2 className="text-2xl font-title text-(--primary-brown)">
+            {title}
+          </h2>
         </div>
       )}
 

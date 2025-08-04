@@ -23,29 +23,33 @@ export function useTeaFilters({
   const [selectedFilter, setSelectedFilter] =
     useState<TeaFilterType>(initialFilter);
 
-  const filteredTeas = useMemo(() => {
+  const { filteredTeas, filterCount } = useMemo(() => {
+    const favoriteTeas = teas.filter((tea) => tea.favorite);
+
+    let filteredTeas: Tea[];
     switch (selectedFilter) {
       case "favorite":
-        return teas.filter((tea) => tea.favorite);
+        filteredTeas = favoriteTeas;
+        break;
       case "all":
-        return teas;
+        filteredTeas = teas;
+        break;
       default:
-        return teas.filter((tea) => tea.type === selectedFilter);
+        filteredTeas = teas.filter((tea) => tea.type === selectedFilter);
     }
-  }, [teas, selectedFilter]);
 
-  const filterCount = useMemo(() => {
     const counts: Record<TeaFilterType, number> = {
       all: teas.length,
-      favorite: teas.filter((tea) => tea.favorite).length,
+      favorite: favoriteTeas.length,
       black: teas.filter((tea) => tea.type === "black").length,
       green: teas.filter((tea) => tea.type === "green").length,
       white: teas.filter((tea) => tea.type === "white").length,
       oolong: teas.filter((tea) => tea.type === "oolong").length,
       puerh: teas.filter((tea) => tea.type === "puerh").length,
     };
-    return counts;
-  }, [teas]);
+
+    return { filteredTeas, filterCount: counts };
+  }, [teas, selectedFilter]);
 
   const setFilter = (filter: TeaFilterType) => {
     setSelectedFilter(filter);
@@ -59,5 +63,3 @@ export function useTeaFilters({
     totalCount: teas.length,
   };
 }
-
-export default useTeaFilters;

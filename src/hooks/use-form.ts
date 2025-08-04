@@ -54,7 +54,7 @@ export const useFormState = <T extends Record<string, any>>(
         return `${field.label} is required`;
       }
 
-      if (field.validate && value) {
+      if (field.validate) {
         return field.validate(value);
       }
 
@@ -82,7 +82,14 @@ export const useFormState = <T extends Record<string, any>>(
     (name: string) => ({
       value: formData[name] || "",
       error: touched[name] ? errors[name] : undefined,
-      onChange: (value: any) => setValue(name, value),
+      onChange: (
+        e: React.ChangeEvent<
+          HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+        >
+      ) => {
+        const value = e.target.value;
+        setValue(name, value);
+      },
       onBlur: () => {
         setTouched(name, true);
         const error = validateField(name, formData[name]);

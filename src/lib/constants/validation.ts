@@ -1,0 +1,6 @@
+export const VALIDATION = {
+  MAX_NAME_WORDS: 5,
+  MAX_DESCRIPTION_WORDS: 30,
+  MAX_BREW_TIME: 30,
+  MIN_BREW_TIME: 0,
+} as const;

@@ -5,7 +5,7 @@ import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { ModalVariant } from "@/lib/types";
-import { ANIMATIONS } from "@/lib/constants";
+import { ANIMATIONS } from "@/lib/constants/ui";
 
 interface ModalProps {
   isOpen: boolean;

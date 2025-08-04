@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { BREAKPOINTS } from "@/lib/constants";
+import { BREAKPOINTS } from "@/lib/constants/ui";
 
 export function useResponsive(
   breakpoint: keyof typeof BREAKPOINTS = "desktop"

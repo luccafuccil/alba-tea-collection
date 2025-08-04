@@ -18,34 +18,3 @@ export function useModal(initialState = false): UseModalReturn {
 
   return { isOpen, open, close, toggle };
 }
-
-export function useModalManager() {
-  const [modals, setModals] = useState<Record<string, boolean>>({});
-
-  const openModal = useCallback((id: string) => {
-    setModals((prev) => ({ ...prev, [id]: true }));
-  }, []);
-
-  const closeModal = useCallback((id: string) => {
-    setModals((prev) => ({ ...prev, [id]: false }));
-  }, []);
-
-  const isModalOpen = useCallback(
-    (id: string) => {
-      return Boolean(modals[id]);
-    },
-    [modals]
-  );
-
-  const closeAllModals = useCallback(() => {
-    setModals({});
-  }, []);
-
-  return {
-    modals,
-    openModal,
-    closeModal,
-    isModalOpen,
-    closeAllModals,
-  };
-}

@@ -5,12 +5,13 @@ import {
   IconHeart,
   IconChevronLeft,
   IconChevronRight,
+  IconArrowsSort,
 } from "@tabler/icons-react";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+import FilterButton from "./filter-button";
 import { useScrollIndicator } from "@/hooks/use-scroll-indicator";
 import { TeaFilterType } from "@/lib/types";
-import { TEA_TYPES } from "@/lib/constants";
+import { TEA_TYPES } from "@/lib/constants/tea";
 
 interface TeaFiltersProps {
   selectedFilter: TeaFilterType;
@@ -19,6 +20,8 @@ interface TeaFiltersProps {
   showCounts?: boolean;
   variant?: "default" | "compact" | "pills";
   className?: string;
+  reverse?: boolean;
+  onReverseChange?: (reverse: boolean) => void;
 }
 
 const TeaFilters: React.FC<TeaFiltersProps> = ({
@@ -28,6 +31,8 @@ const TeaFilters: React.FC<TeaFiltersProps> = ({
   showCounts = false,
   variant = "default",
   className,
+  reverse = false,
+  onReverseChange,
 }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const { showLeftArrow, showRightArrow, scrollLeft, scrollRight } =
@@ -43,24 +48,10 @@ const TeaFilters: React.FC<TeaFiltersProps> = ({
     })),
   ];
 
-  const getButtonVariant = (filter: TeaFilterType) => {
-    return selectedFilter === filter ? "primary" : "secondary";
-  };
-
-  const getFilterLabel = (filter: { value: TeaFilterType; label: string }) => {
-    const baseLabel = filter.label;
-    if (showCounts && filterCounts) {
-      const count = filterCounts[filter.value] || 0;
-      return `${baseLabel} (${count})`;
-    }
-    return baseLabel;
-  };
-
   const containerClasses = {
     default: "flex gap-2 overflow-x-auto scrollbar-hide pb-2",
     compact: "flex gap-1 overflow-x-auto scrollbar-hide",
-    pills:
-      "flex gap-1 overflow-x-auto scrollbar-hide p-1 bg-gray-50 rounded-full",
+    pills: "flex gap-1 overflow-x-auto scrollbar-hide p-1 rounded-full",
   };
 
   const buttonClasses = {
@@ -79,33 +70,39 @@ const TeaFilters: React.FC<TeaFiltersProps> = ({
         {filters.map((filter) => {
           const Icon = filter.icon;
           const isActive = selectedFilter === filter.value;
+          const count =
+            showCounts && filterCounts ? filterCounts[filter.value] : undefined;
 
           return (
-            <Button
+            <FilterButton
               key={filter.value}
-              variant={getButtonVariant(filter.value)}
-              size="sm"
+              filter={filter.value}
+              isActive={isActive}
+              count={count}
               onClick={() => onFilterChange(filter.value)}
               className={cn(
-                "flex-shrink-0 whitespace-nowrap transition-all duration-200",
-                buttonClasses[variant],
-                isActive && variant === "pills" && "bg-white shadow-sm",
-                !isActive && variant === "pills" && "hover:bg-white/50"
+                "flex-shrink-0 whitespace-nowrap",
+                buttonClasses[variant]
               )}
-            >
-              {Icon && (
-                <Icon
-                  size={16}
-                  className={cn(
-                    "mr-1.5",
-                    filter.value === "favorite" && isActive && "fill-current"
-                  )}
-                />
-              )}
-              {getFilterLabel(filter)}
-            </Button>
+            />
           );
         })}
+
+        {onReverseChange && (
+          <button
+            onClick={() => onReverseChange(!reverse)}
+            className={cn(
+              "flex-shrink-0 ml-2 p-2 rounded-full border-2 transition-all duration-200",
+              "hover:scale-105 active:scale-95 hover:border-(--primary-brown)",
+              !reverse
+                ? "border-(--primary-brown) bg-(--primary-brown) text-white"
+                : "border-transparent bg-white text-(--primary-brown)"
+            )}
+            title={reverse ? "Sort oldest first" : "Sort newest first"}
+          >
+            <IconArrowsSort size={16} />
+          </button>
+        )}
       </div>
 
       {showLeftArrow && (

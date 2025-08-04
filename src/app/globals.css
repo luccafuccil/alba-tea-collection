@@ -10,11 +10,32 @@
   --primary-brown: #533c3c;
   --darker-green: #b0d99c;
   --background-color: #fffffd;
+
+  --header-height: 4rem;
+
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1),
+    0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1),
+    0 8px 10px -6px rgb(0 0 0 / 0.1);
+
+  --transition-fast: 150ms ease;
+  --transition-normal: 200ms ease;
+  --transition-slow: 300ms ease;
+
+  --z-dropdown: 50;
+  --z-sticky: 100;
+  --z-fixed: 200;
+  --z-modal: 1000;
+  --z-overlay: 2000;
+  --z-tooltip: 3000;
 }
 
 body {
   background: var(--background-color);
   color: var(--primary-brown);
+  font-family: var(--text-font);
 }
 
 html {
@@ -31,7 +52,16 @@ h6 {
   font-family: var(--title-font);
 }
 
-/* Custom utility classes */
+button {
+  cursor: pointer;
+}
+
+/* Custom selection styles and utility classes */
+::selection {
+  background: var(--primary-green);
+  color: var(--primary-brown);
+}
+
 .scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;
@@ -39,4 +69,190 @@ h6 {
 
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
+}
+
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary-green) transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: var(--primary-green);
+  border-radius: 3px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: var(--darker-green);
+}
+
+:focus-visible {
+  outline: 2px solid var(--primary-green);
+  outline-offset: 2px;
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.animate-slideInUp {
+  animation: slideInUp 0.3s ease-out;
+}
+
+.animate-slideInDown {
+  animation: slideInDown 0.3s ease-out;
+}
+
+.animate-slideInRight {
+  animation: slideInRight 0.3s ease-out;
+}
+
+.animate-scaleIn {
+  animation: scaleIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.bg-gradient-home {
+  background: linear-gradient(
+    to bottom,
+    var(--primary-orange) 0%,
+    var(--background-color) 50%,
+    var(--background-color) 100%
+  );
+}
+
+.bg-gradient-closet {
+  background: linear-gradient(
+    to bottom,
+    var(--primary-blue) 0%,
+    var(--background-color) 60%,
+    var(--background-color) 100%
+  );
+}
+
+.bg-gradient-profile {
+  background: linear-gradient(
+    to bottom,
+    var(--primary-green) 0%,
+    var(--background-color) 50%,
+    var(--background-color) 100%
+  );
+}
+
+.bg-gradient-card {
+  background: linear-gradient(
+    120deg,
+    var(--primary-blue) 51.81%,
+    var(--primary-green) 101.64%
+  );
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.dark .glass {
+  background: rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.tilt-container {
+  display: inline-block;
+  width: fit-content;
+  height: fit-content;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .tilt-container {
+    transform: none !important;
+    transition: none !important;
+    will-change: auto !important;
+  }
+
+  button,
+  a,
+  [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  .animate-slideInUp,
+  .animate-slideInDown,
+  .animate-slideInRight,
+  .animate-scaleIn {
+    animation-duration: 0.2s;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

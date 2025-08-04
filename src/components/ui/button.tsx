@@ -12,11 +12,11 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 
 const buttonVariants = {
   primary:
-    "bg-primary-green hover:bg-darker-green text-text-color shadow-sm hover:shadow-md",
+    "bg-(--primary-green) hover:bg-(--darker-green) text-(--text-color) shadow-sm hover:shadow-md",
   secondary:
-    "bg-white hover:bg-gray-50 text-text-color border border-primary-green shadow-sm hover:shadow-md",
+    "bg-white hover:bg-gray-50 text-(--text-color) border border-(--primary-green) shadow-sm hover:shadow-md",
   danger: "bg-red-500 hover:bg-red-600 text-white shadow-sm hover:shadow-md",
-  ghost: "hover:bg-gray-100 text-text-color",
+  ghost: "hover:bg-gray-100 text-(--text-color)",
 };
 
 const buttonSizes = {
@@ -40,7 +40,7 @@ export const Button = ({
       className={cn(
         "inline-flex items-center justify-center rounded-full font-body font-medium",
         "transition-all duration-200 transform active:scale-95",
-        "focus:outline-none focus:ring-2 focus:ring-primary-green focus:ring-offset-2",
+        "focus:outline-none focus:ring-2 focus:ring-(--primary-green) focus:ring-offset-2",
         "disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none",
 
         buttonVariants[variant],
@@ -152,7 +152,7 @@ export const ButtonLink = ({
       className={cn(
         "inline-flex items-center justify-center rounded-full font-body font-medium",
         "transition-all duration-200 transform active:scale-95",
-        "focus:outline-none focus:ring-2 focus:ring-primary-green focus:ring-offset-2",
+        "focus:outline-none focus:ring-2 focus:ring-(--primary-green) focus:ring-offset-2",
         "no-underline",
 
         buttonVariants[variant],
