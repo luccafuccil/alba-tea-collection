@@ -218,9 +218,9 @@ button {
 }
 
 .tilt-container {
-  display: inline-block;
-  width: fit-content;
-  height: fit-content;
+  display: block;
+  width: 100%;
+  height: inherit;
   cursor: pointer;
 }
 

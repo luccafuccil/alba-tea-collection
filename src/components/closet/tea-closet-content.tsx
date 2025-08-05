@@ -11,6 +11,7 @@ import TeaFilters from "@/components/tea/tea-filters";
 import TeaGrid from "@/components/tea/tea-grid";
 import { useTeaStore } from "@/store/tea-store";
 import { useTeaFilters } from "@/hooks/use-tea-filters";
+import { useTeaNavigation } from "@/hooks/use-tea-navigation";
 import { useIsDesktop } from "@/hooks/use-responsive";
 import { TeaFilterType } from "@/lib/types";
 
@@ -21,6 +22,12 @@ export const TeaClosetContent: React.FC = () => {
   const [reverse, setReverse] = useState(true);
 
   const { teas, toggleFavorite } = useTeaStore();
+  const {
+    navigateToTea,
+    navigateToTeaEdit,
+    navigateToTeaDelete,
+    navigateToNewTea,
+  } = useTeaNavigation();
 
   const initialFilter = (searchParams.get("type") as TeaFilterType) || "all";
 
@@ -42,19 +49,7 @@ export const TeaClosetContent: React.FC = () => {
   };
 
   const handleAddTea = () => {
-    router.push("/closet/tea/new");
-  };
-
-  const handleTeaClick = (id: string) => {
-    router.push(`/closet/tea/${id}`);
-  };
-
-  const handleEditTea = (id: string) => {
-    router.push(`/closet/tea/${id}/edit`);
-  };
-
-  const handleDeleteTea = (id: string) => {
-    router.push(`/closet/tea/${id}/delete`);
+    navigateToNewTea();
   };
 
   const renderAddTeaCard = () => {
@@ -125,27 +120,17 @@ export const TeaClosetContent: React.FC = () => {
   return (
     <Container size="xl" className="py-8">
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.2 }}
         className="space-y-8"
       >
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-          <motion.h1
-            className="font-title text-3xl md:text-4xl text-(--primary-brown) text-center lg:text-left"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.2, duration: 0.6 }}
-          >
+          <h1 className="font-title text-3xl md:text-4xl text-(--primary-brown) text-center lg:text-left">
             {getTitle()}
-          </motion.h1>
+          </h1>
 
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.3, duration: 0.6 }}
-            className="lg:max-w-full"
-          >
+          <div className="lg:max-w-full">
             <TeaFilters
               selectedFilter={selectedFilter}
               onFilterChange={handleFilterChange}
@@ -155,25 +140,14 @@ export const TeaClosetContent: React.FC = () => {
               reverse={reverse}
               onReverseChange={setReverse}
             />
-          </motion.div>
+          </div>
         </div>
 
         {isDesktop && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4, duration: 0.4 }}
-            className="flex justify-start"
-          >
-            {renderAddTeaCard()}
-          </motion.div>
+          <div className="flex justify-start">{renderAddTeaCard()}</div>
         )}
 
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5, duration: 0.6 }}
-        >
+        <div>
           {filteredTeas.length === 0 ? (
             (() => {
               const emptyConfig = getEmptyCardConfig();
@@ -187,22 +161,19 @@ export const TeaClosetContent: React.FC = () => {
               );
             })()
           ) : (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6, duration: 0.4 }}
-            >
-              <TeaGrid
-                teas={filteredTeas}
-                size="medium"
-                onFavoriteToggle={toggleFavorite}
-                onEdit={handleEditTea}
-                onDelete={handleDeleteTea}
-                reverse={reverse}
-              />
-            </motion.div>
+            <TeaGrid
+              teas={filteredTeas}
+              size="medium"
+              onFavoriteToggle={toggleFavorite}
+              onEdit={navigateToTeaEdit}
+              onDelete={navigateToTeaDelete}
+              onClick={navigateToTea}
+              reverse={reverse}
+              fixedCardHeight="200px"
+              className="min-h-[300px] lg:min-h-[400px]"
+            />
           )}
-        </motion.div>
+        </div>
       </motion.div>
 
       {!isDesktop && (

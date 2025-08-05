@@ -32,7 +32,7 @@ const TiltWrapper: React.FC<TiltWrapperProps> = ({
   glareBorderRadius = "24px",
 }) => {
   if (disabled) {
-    return <div className={className}>{children}</div>;
+    return <div className={cn("h-full", className)}>{children}</div>;
   }
 
   return (
@@ -46,7 +46,7 @@ const TiltWrapper: React.FC<TiltWrapperProps> = ({
       glareColor={glareColor}
       glarePosition={glarePosition}
       glareBorderRadius={glareBorderRadius}
-      className={cn("tilt-container", className)}
+      className={cn("tilt-container h-full", className)}
     >
       {children}
     </Tilt>

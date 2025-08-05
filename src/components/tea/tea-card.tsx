@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { IconHeart, IconEdit, IconTrash, IconClock } from "@tabler/icons-react";
@@ -12,11 +12,11 @@ import {
   InteractiveCard,
 } from "@/components/ui/card";
 import { Button, IconButton } from "@/components/ui/button";
-import { Modal } from "@/components/ui/modal";
 import TiltWrapper from "@/components/ui/tilt-wrapper";
+import TeaImage from "./tea-image";
 import { useIsDesktop, useIsMobile } from "@/hooks/use-responsive";
 import { Tea, CardSize } from "@/lib/types";
-import { TEA_TYPE_IMAGES } from "@/lib/constants";
+import { TEA_TYPE_IMAGES } from "@/lib/constants/tea";
 import { cn } from "@/lib/utils";
 
 interface TeaCardProps {
@@ -46,7 +46,6 @@ const TeaCard: React.FC<TeaCardProps> = ({
   disableTilt = false,
   className,
 }) => {
-  const [showModal, setShowModal] = useState(false);
   const router = useRouter();
   const isDesktop = useIsDesktop();
   const isMobile = useIsMobile();
@@ -61,8 +60,6 @@ const TeaCard: React.FC<TeaCardProps> = ({
   const handleCardClick = () => {
     if (onClick) {
       onClick(tea.id);
-    } else if (isDesktop) {
-      setShowModal(true);
     } else {
       router.push(`/closet/tea/${tea.id}`);
     }
@@ -106,61 +103,81 @@ const TeaCard: React.FC<TeaCardProps> = ({
     switch (variant) {
       case "compact":
         return (
-          <div className="flex items-center gap-3">
-            <div className="relative w-12 h-12 rounded-lg overflow-hidden flex-shrink-0">
-              <Image
-                src={getTeaImage(tea)}
-                alt={`${tea.name} tea`}
-                fill
-                className="object-cover"
-              />
-            </div>
+          <div className="flex items-center gap-4 p-1">
+            <TeaImage
+              src={getTeaImage(tea)}
+              alt={`${tea.name} tea`}
+              size="compact"
+            />
             <div className="flex-1 min-w-0">
-              <h3 className="font-title font-medium text-text-color truncate">
-                {tea.name}
-              </h3>
-              <span
-                className={cn(
-                  "inline-block px-2 py-0.5 rounded-full text-xs font-medium",
-                  getTypeColor(tea.type)
+              <div className="flex items-start justify-between mb-1">
+                <h3 className="font-title font-medium text-text-color truncate text-sm">
+                  {tea.name}
+                </h3>
+                {onFavoriteToggle && (
+                  <IconButton
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleFavoriteToggle}
+                    className={cn(
+                      "flex-shrink-0 ml-2",
+                      tea.favorite ? "text-red-500" : "text-gray-400"
+                    )}
+                  >
+                    <IconHeart
+                      size={14}
+                      fill={tea.favorite ? "currentColor" : "none"}
+                    />
+                  </IconButton>
                 )}
-              >
-                {tea.type}
-              </span>
-            </div>
-            {onFavoriteToggle && (
-              <IconButton
-                variant="ghost"
-                size="sm"
-                onClick={handleFavoriteToggle}
-                className={cn(
-                  "flex-shrink-0",
-                  tea.favorite ? "text-red-500" : "text-gray-400"
-                )}
-              >
-                <IconHeart
-                  size={16}
-                  fill={tea.favorite ? "currentColor" : "none"}
-                />
-              </IconButton>
-            )}
-          </div>
-        );
-
-      case "detailed":
-        return (
-          <div className="space-y-4">
-            <div className="flex items-start justify-between">
-              <div className="space-y-2 flex-1">
+              </div>
+              <div className="flex items-center gap-2 mb-1">
                 <span
                   className={cn(
-                    "inline-block px-3 py-1 rounded-full text-sm font-medium",
+                    "inline-block px-2 py-0.5 rounded-full text-xs font-medium",
                     getTypeColor(tea.type)
                   )}
                 >
                   {tea.type}
                 </span>
-                <h3 className="font-title text-xl font-medium text-text-color">
+                {tea.brewTime && (
+                  <div className="flex items-center gap-1 text-xs text-text-color/60">
+                    <IconClock size={10} />
+                    <span>{tea.brewTime}min</span>
+                  </div>
+                )}
+              </div>
+              {tea.description && (
+                <p className="font-body text-text-color/70 text-xs line-clamp-1">
+                  {tea.description}
+                </p>
+              )}
+            </div>
+          </div>
+        );
+
+      case "detailed":
+        return (
+          <div className="space-y-6">
+            <div className="flex items-start justify-between">
+              <div className="space-y-3 flex-1">
+                <div className="flex items-center gap-3">
+                  <span
+                    className={cn(
+                      "inline-block px-4 py-2 rounded-full text-sm font-medium shadow-sm",
+                      getTypeColor(tea.type)
+                    )}
+                  >
+                    {tea.type}
+                  </span>
+                  {tea.brewTime && (
+                    <div className="flex items-center gap-2 text-sm text-text-color/60 bg-gray-50 px-3 py-1 rounded-full">
+                      <IconClock size={16} />
+                      <span>{tea.brewTime} min brewing</span>
+                    </div>
+                  )}
+                </div>
+                <h3 className="font-title text-2xl font-medium text-text-color leading-tight">
                   {tea.name}
                 </h3>
               </div>
@@ -169,76 +186,74 @@ const TeaCard: React.FC<TeaCardProps> = ({
                   variant="ghost"
                   onClick={handleFavoriteToggle}
                   className={cn(
-                    tea.favorite ? "text-red-500" : "text-gray-400"
+                    "p-3 rounded-full transition-colors",
+                    tea.favorite
+                      ? "text-red-500 bg-red-50"
+                      : "text-gray-400 hover:bg-gray-50"
                   )}
                 >
                   <IconHeart
-                    size={20}
+                    size={24}
                     fill={tea.favorite ? "currentColor" : "none"}
                   />
                 </IconButton>
               )}
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-4">
                 {tea.description && (
-                  <p className="font-body text-text-color/70 text-sm leading-relaxed">
-                    {tea.description}
-                  </p>
-                )}
-
-                {tea.brewTime && (
-                  <div className="flex items-center gap-2 text-sm text-text-color/60">
-                    <IconClock size={16} />
-                    <span>{tea.brewTime} min brewing time</span>
+                  <div>
+                    <h4 className="font-medium text-text-color mb-2">
+                      Description
+                    </h4>
+                    <p className="font-body text-text-color/70 text-sm leading-relaxed">
+                      {tea.description}
+                    </p>
                   </div>
                 )}
 
                 {tea.tastingNotes && (
                   <div>
-                    <h4 className="font-medium text-text-color mb-1">
+                    <h4 className="font-medium text-text-color mb-2">
                       Tasting Notes
                     </h4>
-                    <p className="font-body text-text-color/70 text-sm">
+                    <p className="font-body text-text-color/70 text-sm leading-relaxed">
                       {tea.tastingNotes}
                     </p>
                   </div>
                 )}
+
+                {showActions && (
+                  <CardActions className="pt-4">
+                    <Button variant="danger" size="sm" onClick={handleDelete}>
+                      <IconTrash size={16} />
+                      Delete
+                    </Button>
+                    <Button variant="secondary" size="sm" onClick={handleEdit}>
+                      <IconEdit size={16} />
+                      Edit
+                    </Button>
+                  </CardActions>
+                )}
               </div>
 
-              <div className="relative aspect-square rounded-2xl overflow-hidden">
-                <Image
-                  src={getTeaImage(tea)}
-                  alt={`${tea.name} tea`}
-                  fill
-                  className="object-cover"
-                />
-              </div>
+              <TeaImage
+                src={getTeaImage(tea)}
+                alt={`${tea.name} tea`}
+                size="large"
+              />
             </div>
-
-            {showActions && (
-              <CardActions>
-                <Button variant="danger" size="sm" onClick={handleDelete}>
-                  <IconTrash size={16} />
-                  Delete
-                </Button>
-                <Button variant="secondary" size="sm" onClick={handleEdit}>
-                  <IconEdit size={16} />
-                  Edit
-                </Button>
-              </CardActions>
-            )}
           </div>
         );
 
       default:
         return (
-          <div className="space-y-3">
-            <div className="flex items-start justify-between">
+          <div className="flex flex-col h-full">
+            <div className="flex items-start justify-between mb-3">
               <span
                 className={cn(
-                  "inline-block px-2 py-1 rounded-full text-xs font-medium",
+                  "inline-block px-3 py-1 rounded-full text-xs font-medium shadow-sm",
                   getTypeColor(tea.type)
                 )}
               >
@@ -250,55 +265,55 @@ const TeaCard: React.FC<TeaCardProps> = ({
                   size="sm"
                   onClick={handleFavoriteToggle}
                   className={cn(
-                    tea.favorite ? "text-red-500" : "text-gray-400"
+                    "transition-colors rounded-full",
+                    tea.favorite
+                      ? "text-red-500 bg-red-50"
+                      : "text-gray-400 hover:bg-gray-50"
                   )}
                 >
                   <IconHeart
-                    size={16}
+                    size={18}
                     fill={tea.favorite ? "currentColor" : "none"}
                   />
                 </IconButton>
               )}
             </div>
 
-            <h3 className="font-title font-medium text-text-color">
+            <h3 className="font-title font-medium text-text-color text-lg leading-tight mb-3">
               {tea.name}
             </h3>
 
-            <div className="flex gap-3">
-              <div className="flex-1 space-y-2">
-                {tea.description && (
-                  <p className="font-body text-text-color/70 text-sm line-clamp-2">
-                    {tea.description}
-                  </p>
-                )}
+            <div className="flex gap-3 flex-1">
+              <div className="flex-1 space-y-2 flex flex-col min-w-0">
+                <div className="flex-1">
+                  {tea.description && (
+                    <p className="font-body text-text-color/70 text-sm line-clamp-2 leading-relaxed">
+                      {tea.description}
+                    </p>
+                  )}
+                </div>
 
-                {tea.brewTime && (
-                  <div className="flex items-center gap-1 text-xs text-text-color/60">
-                    <IconClock size={12} />
-                    <span>{tea.brewTime} min</span>
-                  </div>
-                )}
+                <div className="flex items-center gap-2 mt-auto">
+                  {tea.brewTime && (
+                    <div className="flex items-center gap-1 text-xs text-text-color/60 bg-gray-50 px-2 py-1 rounded-full">
+                      <IconClock size={10} />
+                      <span>{tea.brewTime}min</span>
+                    </div>
+                  )}
+                </div>
               </div>
 
-              <div className="relative w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
-                <Image
+              <div className="flex-shrink-0 w-16">
+                <TeaImage
                   src={getTeaImage(tea)}
                   alt={`${tea.name} tea`}
-                  fill
-                  className="object-cover"
+                  size="small"
                 />
               </div>
             </div>
 
-            {tea.tastingNotes && (
-              <p className="font-body text-text-color/60 text-xs">
-                {tea.tastingNotes}
-              </p>
-            )}
-
             {showActions && (
-              <CardActions className="pt-2">
+              <CardActions className="pt-2 border-t border-gray-100 mt-3">
                 <Button variant="ghost" size="sm" onClick={handleDelete}>
                   <IconTrash size={14} />
                 </Button>
@@ -323,14 +338,17 @@ const TeaCard: React.FC<TeaCardProps> = ({
   const cardElement = (
     <CardComponent
       size={size}
-      onClick={isClickable ? handleCardClick : undefined}
+      onClick={!disableInteractions ? handleCardClick : undefined}
       className={cn(
-        "transition-all duration-200",
-        variant === "compact" && "p-4",
+        "transition-all duration-200 hover:shadow-lg flex flex-col",
+        variant === "compact" && "p-3 hover:bg-gray-50",
+        variant === "default" && "hover:-translate-y-0.5",
+        variant === "detailed" && "p-0",
+        !disableInteractions && "cursor-pointer",
         className
       )}
     >
-      <CardContent className="p-0">{renderCardContent()}</CardContent>
+      <CardContent className="p-0 flex-1">{renderCardContent()}</CardContent>
     </CardComponent>
   );
 
@@ -343,31 +361,12 @@ const TeaCard: React.FC<TeaCardProps> = ({
           glareColor="#ffffff"
           tiltMaxAngleX={8}
           tiltMaxAngleY={8}
+          className={className}
         >
           {cardElement}
         </TiltWrapper>
       ) : (
         cardElement
-      )}
-
-      {showModal && isDesktop && (
-        <Modal
-          isOpen={showModal}
-          onClose={() => setShowModal(false)}
-          variant="form"
-          title={tea.name}
-        >
-          <TeaCard
-            tea={tea}
-            variant="detailed"
-            showActions={showActions}
-            onFavoriteToggle={onFavoriteToggle}
-            onEdit={onEdit}
-            onDelete={onDelete}
-            disableInteractions
-            className="border-0 shadow-none bg-transparent"
-          />
-        </Modal>
       )}
     </>
   );

@@ -8,6 +8,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import TeaGrid from "@/components/tea/tea-grid";
 import { useTeaStore } from "@/store/tea-store";
+import { useTeaNavigation } from "@/hooks/use-tea-navigation";
 
 interface ProfileTeaListProps {
   profileId: string;
@@ -18,16 +19,14 @@ export const ProfileTeaList: React.FC<ProfileTeaListProps> = ({
 }) => {
   const router = useRouter();
   const { teas, toggleFavorite } = useTeaStore();
+  const { navigateToTea, navigateToTeaEdit, navigateToCloset } =
+    useTeaNavigation();
 
   const favoriteTeas = teas.filter((tea) => tea.favorite);
   const previewTeas = favoriteTeas.slice(0, 3);
 
   const handleViewAll = () => {
-    router.push("/closet?type=favorite");
-  };
-
-  const handleEditTea = (id: string) => {
-    router.push(`/closet/tea/${id}/edit`);
+    navigateToCloset("favorite");
   };
 
   if (favoriteTeas.length === 0) {
@@ -80,8 +79,10 @@ export const ProfileTeaList: React.FC<ProfileTeaListProps> = ({
             teas={previewTeas}
             size="compact"
             onFavoriteToggle={toggleFavorite}
-            onEdit={handleEditTea}
+            onEdit={navigateToTeaEdit}
+            onClick={navigateToTea}
             staggerDelay={0.1}
+            className="space-y-2"
           />
         </motion.div>
 

@@ -13,10 +13,12 @@ interface TeaGridProps {
   onFavoriteToggle?: (id: string) => void;
   onEdit?: (id: string) => void;
   onDelete?: (id: string) => void;
+  onClick?: (id: string) => void;
   showActions?: boolean;
   className?: string;
   staggerDelay?: number;
   reverse?: boolean;
+  fixedCardHeight?: string;
 }
 
 export const TeaGrid: React.FC<TeaGridProps> = ({
@@ -25,10 +27,12 @@ export const TeaGrid: React.FC<TeaGridProps> = ({
   onFavoriteToggle,
   onEdit,
   onDelete,
+  onClick,
   showActions = false,
   className,
   staggerDelay = 0.05,
   reverse = true,
+  fixedCardHeight,
 }) => {
   if (teas.length === 0) {
     return null;
@@ -37,13 +41,13 @@ export const TeaGrid: React.FC<TeaGridProps> = ({
   const getGridConfig = () => {
     switch (size) {
       case "small":
-        return { cols: 4 as const, gap: "md" as const };
+        return { cols: 4 as const, gap: "sm" as const };
       case "compact":
         return { cols: 1 as const, gap: "sm" as const };
       case "large":
         return { cols: 2 as const, gap: "lg" as const };
       default:
-        return { cols: 3 as const, gap: "lg" as const };
+        return { cols: 3 as const, gap: "md" as const };
     }
   };
 
@@ -69,14 +73,19 @@ export const TeaGrid: React.FC<TeaGridProps> = ({
             duration: 0.4,
             ease: "easeOut",
           }}
+          className="w-full"
+          style={fixedCardHeight ? { height: fixedCardHeight } : undefined}
         >
           <TeaCard
             tea={tea}
             size={size}
+            variant={size === "compact" ? "compact" : "default"}
             onFavoriteToggle={onFavoriteToggle}
             onEdit={onEdit}
             onDelete={onDelete}
+            onClick={onClick}
             showActions={showActions}
+            className={fixedCardHeight ? "h-full" : undefined}
           />
         </motion.div>
       ))}

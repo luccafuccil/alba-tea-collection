@@ -51,8 +51,8 @@ export const Header: React.FC<HeaderProps> = ({ className }) => {
               <NavLink href="/discover" active={pathname === "/discover"}>
                 Discover
               </NavLink>
-              <NavLink href="/journal" active={pathname === "/journal"}>
-                Journal
+              <NavLink href="/rituals" active={pathname === "/rituals"}>
+                Rituals
               </NavLink>
             </nav>
           )}
