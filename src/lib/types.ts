@@ -66,8 +66,6 @@ export interface ApiResponse<T> {
 // Filter Types static for now
 export type TeaFilterType = "all" | "favorite" | TeaType;
 
-// Store Types only for Tea management
-// Store will be part of a future state management solution
 export interface TeaStore {
   teas: Tea[];
   addTea: (tea: Omit<Tea, "id">) => void;

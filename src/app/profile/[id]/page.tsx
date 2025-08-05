@@ -5,9 +5,9 @@ import { PageContainer } from "@/components/ui/container";
 import { LoadingSpinner } from "@/components/ui/loading-overlay";
 
 interface ProfilePageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export async function generateMetadata({

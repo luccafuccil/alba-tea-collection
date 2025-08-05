@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { use } from "react";
 import { notFound } from "next/navigation";
 import { motion } from "framer-motion";
 import { TeaForm } from "@/components/tea/tea-form";
@@ -8,14 +8,15 @@ import { PageContainer } from "@/components/ui/container";
 import { useTeaStore } from "@/store/tea-store";
 
 interface EditTeaPageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export default function EditTeaPage({ params }: EditTeaPageProps) {
+  const { id } = use(params);
   const { getTea } = useTeaStore();
-  const tea = getTea(params.id);
+  const tea = getTea(id);
 
   if (!tea) {
     notFound();

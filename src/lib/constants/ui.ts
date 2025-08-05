@@ -10,6 +10,7 @@ export const STORAGE_KEYS = {
   profile: "alba_profile",
   preferences: "alba_preferences",
   weather: "alba_weather",
+  coords: "alba_coords",
 } as const;
 
 export const ANIMATIONS = {

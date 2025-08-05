@@ -37,7 +37,8 @@ export const ProfilePageContent: React.FC<ProfilePageContentProps> = ({
               Profile Not Found
             </h2>
             <p className="font-body text-text-color/70">
-              The profile you're looking for doesn't exist or has been moved.
+              The profile you&apos;re looking for doesn&apos;t exist or has been
+              moved.
             </p>
           </div>
         </Card>
