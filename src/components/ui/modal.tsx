@@ -1,11 +1,8 @@
 "use client";
 
 import React from "react";
-import { createPortal } from "react-dom";
-import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { ModalVariant } from "@/lib/types";
-import { ANIMATIONS } from "@/lib/constants/ui";
 
 interface ModalProps {
   isOpen: boolean;
@@ -16,6 +13,7 @@ interface ModalProps {
   className?: string;
   closeOnBackdrop?: boolean;
   closeButtonVisible?: boolean;
+  animationClass?: string;
 }
 
 const modalVariants = {
@@ -34,6 +32,7 @@ export const Modal = ({
   className,
   closeOnBackdrop = true,
   closeButtonVisible = true,
+  animationClass,
 }: ModalProps) => {
   React.useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -51,59 +50,48 @@ export const Modal = ({
     };
   }, [isOpen, onClose]);
 
-  const [mounted, setMounted] = React.useState(false);
-  React.useEffect(() => setMounted(true), []);
+  if (!isOpen) return null;
 
-  if (!mounted) return null;
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div
+        onClick={closeOnBackdrop ? onClose : undefined}
+        className="absolute inset-0 bg-black/50 backdrop-blur-sm cursor-pointer animate-fadeIn"
+      />
 
-  return createPortal(
-    <AnimatePresence>
-      {isOpen && (
-        <>
-          <motion.div
-            {...ANIMATIONS.fadeIn}
-            onClick={closeOnBackdrop ? onClose : undefined}
-            className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm cursor-pointer"
-          />
-
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
-            <motion.div
-              {...ANIMATIONS.modal}
-              className={cn(
-                "relative w-full bg-white rounded-3xl shadow-2xl pointer-events-auto",
-                "border border-gray-100",
-                modalVariants[variant],
-                className
-              )}
-              onClick={(e) => e.stopPropagation()}
-            >
-              {(title || closeButtonVisible) && (
-                <div className="flex items-center justify-between p-6 border-b border-gray-100">
-                  {title && (
-                    <h2 className="text-xl font-title text-text-color font-medium">
-                      {title}
-                    </h2>
-                  )}
-                  <div className="flex-1" />
-                  {closeButtonVisible && (
-                    <button
-                      onClick={onClose}
-                      className="p-2 rounded-full hover:bg-gray-100 transition-colors -mr-2"
-                      aria-label="Close modal"
-                    >
-                      X
-                    </button>
-                  )}
-                </div>
-              )}
-
-              <div className={cn("p-6", title && "pt-4")}>{children}</div>
-            </motion.div>
+      <div
+        className={cn(
+          "relative w-full bg-white rounded-3xl shadow-2xl",
+          "border border-gray-100",
+          animationClass || "animate-slideUpModal",
+          modalVariants[variant],
+          className
+        )}
+        onClick={(e) => e.stopPropagation()}
+      >
+        {(title || closeButtonVisible) && (
+          <div className="flex items-center justify-between p-6 border-b border-gray-100">
+            {title && (
+              <h2 className="text-xl font-title text-text-color font-medium">
+                {title}
+              </h2>
+            )}
+            <div className="flex-1" />
+            {closeButtonVisible && (
+              <button
+                onClick={onClose}
+                className="p-2 rounded-full hover:bg-gray-100 transition-colors -mr-2"
+                aria-label="Close modal"
+              >
+                ✕
+              </button>
+            )}
           </div>
-        </>
-      )}
-    </AnimatePresence>,
-    document.body
+        )}
+
+        <div className={cn("p-6", title && "pt-4")}>{children}</div>
+      </div>
+    </div>
   );
 };
 
@@ -171,34 +159,32 @@ export const MobileModal = ({
   title?: string;
   className?: string;
 }) => {
-  return (
-    <AnimatePresence>
-      {isOpen && (
-        <motion.div
-          {...ANIMATIONS.slideInRight}
-          className={cn(
-            "fixed inset-0 z-50 bg-background-color",
-            "flex flex-col overflow-hidden",
-            className
-          )}
-        >
-          <div className="flex items-center p-4 border-b border-gray-100 bg-white">
-            <button
-              onClick={onClose}
-              className="p-2 -ml-2 rounded-full hover:bg-gray-100 transition-colors"
-            >
-              X
-            </button>
-            {title && (
-              <h1 className="ml-4 text-lg font-title text-text-color font-medium">
-                {title}
-              </h1>
-            )}
-          </div>
+  if (!isOpen) return null;
 
-          <div className="flex-1 overflow-y-auto">{children}</div>
-        </motion.div>
+  return (
+    <div
+      className={cn(
+        "fixed inset-0 z-50 bg-background-color",
+        "flex flex-col overflow-hidden",
+        "animate-in slide-in-from-right duration-300 ease-out",
+        className
       )}
-    </AnimatePresence>
+    >
+      <div className="flex items-center p-4 border-b border-gray-100 bg-white">
+        <button
+          onClick={onClose}
+          className="p-2 -ml-2 rounded-full hover:bg-gray-100 transition-colors"
+        >
+          ←
+        </button>
+        {title && (
+          <h1 className="ml-4 text-lg font-title text-text-color font-medium">
+            {title}
+          </h1>
+        )}
+      </div>
+
+      <div className="flex-1 overflow-y-auto">{children}</div>
+    </div>
   );
 };

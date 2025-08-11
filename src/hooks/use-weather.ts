@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useLocalStorage } from "./use-local-storage";
 import { WeatherData } from "@/lib/types";
 import { STORAGE_KEYS } from "@/lib/constants/ui";
@@ -34,85 +34,79 @@ export const useWeather = (): UseWeatherReturn => {
   );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const coordsRef = useRef(coords);
 
-  const getUserLocation = () => {
-    return new Promise<Coordinates>((resolve, reject) => {
-      if (!navigator.geolocation) {
-        reject(new Error("Geolocation is not supported"));
-        return;
-      }
+  useEffect(() => {
+    coordsRef.current = coords;
+  }, [coords]);
 
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const newCoords = {
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-          };
-          setCoords(newCoords);
-          resolve(newCoords);
-        },
-        (error) => {
-          console.warn("Could not get user location:", error.message);
-          resolve(coords);
-        },
-        {
-          timeout: 10000,
-          enableHighAccuracy: false,
-        }
-      );
-    });
-  };
-
-  const fetchCityName = async (
-    latitude: number,
-    longitude: number
-  ): Promise<string> => {
-    try {
-      const response = await fetch(
-        `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`
-      );
-      const data = await response.json();
-
-      return (
-        data.address?.city ||
-        data.address?.town ||
-        data.address?.village ||
-        data.address?.state ||
-        "Unknown Location"
-      );
-    } catch (error) {
-      console.warn("Could not fetch city name:", error);
-      return "Unknown Location";
-    }
-  };
-
-  const fetchWeatherData = async (
-    coordinates: Coordinates
-  ): Promise<WeatherData> => {
-    const [weatherResponse, cityName] = await Promise.all([
-      fetch(
-        `https://api.open-meteo.com/v1/forecast?latitude=${coordinates.latitude}&longitude=${coordinates.longitude}&current_weather=true`
-      ),
-      fetchCityName(coordinates.latitude, coordinates.longitude),
-    ]);
-
-    if (!weatherResponse.ok) {
-      throw new Error("Failed to fetch weather data");
-    }
-
-    const weatherData = await weatherResponse.json();
-
-    return {
-      temperature: Math.round(weatherData.current_weather.temperature),
-      weathercode: weatherData.current_weather.weathercode,
-      city: cityName,
-      timestamp: new Date(),
-    };
-  };
-
-  const refreshWeather = async () => {
+  const refreshWeather = useCallback(async () => {
     setLoading(true);
     setError(null);
+
+    const getUserLocation = () => {
+      return new Promise<Coordinates>((resolve, reject) => {
+        if (!navigator.geolocation) {
+          reject(new Error("Geolocation is not supported"));
+          return;
+        }
+
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const newCoords = {
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude,
+            };
+            setCoords(newCoords);
+            resolve(newCoords);
+          },
+          (error) => {
+            console.warn("Could not get user location:", error.message);
+            resolve(coordsRef.current);
+          },
+          {
+            timeout: 10000,
+            enableHighAccuracy: false,
+          }
+        );
+      });
+    };
+
+    const fetchWeatherData = async (
+      coordinates: Coordinates
+    ): Promise<WeatherData> => {
+      try {
+        const response = await fetch(
+          `/api/weather?lat=${coordinates.latitude}&lon=${coordinates.longitude}`
+        );
+
+        if (!response.ok) {
+          throw new Error(
+            `HTTP ${response.status}: Failed to fetch weather data`
+          );
+        }
+
+        const weatherData = await response.json();
+
+        if (!weatherData || typeof weatherData.temperature === "undefined") {
+          throw new Error("Invalid weather data format received");
+        }
+
+        if (weatherData.fallback && weatherData.error) {
+          console.warn("Using fallback weather data:", weatherData.error);
+        }
+
+        return {
+          temperature: weatherData.temperature,
+          weathercode: weatherData.weathercode,
+          city: weatherData.city || "Unknown Location",
+          timestamp: new Date(weatherData.timestamp || new Date()),
+        };
+      } catch (fetchError) {
+        console.error("Error in fetchWeatherData:", fetchError);
+        throw fetchError;
+      }
+    };
 
     try {
       const coordinates = await getUserLocation();
@@ -126,7 +120,7 @@ export const useWeather = (): UseWeatherReturn => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [setWeather, setCoords]);
 
   useEffect(() => {
     const shouldRefreshWeather = () => {
@@ -145,7 +139,7 @@ export const useWeather = (): UseWeatherReturn => {
     } else {
       setLoading(false);
     }
-  }, []);
+  }, [weather, refreshWeather]);
 
   return {
     weather,

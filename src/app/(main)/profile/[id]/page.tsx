@@ -16,7 +16,7 @@ export async function generateMetadata({
   const { id } = await params;
 
   return {
-    title: `${id} | Alba`,
+    title: `${id}`,
     description: "View and manage your tea profile and collection highlights.",
   };
 }

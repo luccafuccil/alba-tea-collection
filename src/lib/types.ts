@@ -50,10 +50,10 @@ export interface FormField {
   required?: boolean;
   options?: Array<{ value: string; label: string }>;
   placeholder?: string;
-  validate?: (value: any) => string | undefined;
+  validate?: (value: unknown) => string | undefined;
   conditional?: {
     field: string;
-    value: any;
+    value: unknown;
   };
 }
 

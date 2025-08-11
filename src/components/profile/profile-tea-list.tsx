@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { IconArrowRight } from "@tabler/icons-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { ClientOnly } from "@/components/ui/client-only";
 import TeaGrid from "@/components/tea/tea-grid";
 import { useTeaStore } from "@/store/tea-store";
 import { useTeaNavigation } from "@/hooks/use-tea-navigation";
@@ -14,13 +15,10 @@ interface ProfileTeaListProps {
   profileId: string;
 }
 
-export const ProfileTeaList: React.FC<ProfileTeaListProps> = ({
-  profileId,
-}) => {
+export const ProfileTeaList: React.FC<ProfileTeaListProps> = () => {
   const router = useRouter();
   const { teas, toggleFavorite } = useTeaStore();
-  const { navigateToTea, navigateToTeaEdit, navigateToCloset } =
-    useTeaNavigation();
+  const { navigateToTea, navigateToCloset } = useTeaNavigation();
 
   const favoriteTeas = teas.filter((tea) => tea.favorite);
   const previewTeas = favoriteTeas.slice(0, 3);
@@ -29,58 +27,65 @@ export const ProfileTeaList: React.FC<ProfileTeaListProps> = ({
     navigateToCloset("favorite");
   };
 
+  const handleTeaClick = (teaId: string) => {
+    navigateToTea(teaId);
+  };
+
   if (favoriteTeas.length === 0) {
     return (
-      <Card size="medium" className="text-center bg-white/80 backdrop-blur-sm">
-        <div className="space-y-4">
-          <div className="text-4xl">💚</div>
-          <div>
-            <h3 className="font-title text-lg text-text-color mb-2">
-              No favorite teas yet!
-            </h3>
-            <p className="font-body text-text-color/70 text-sm">
-              Mark some teas as favorites to see them here!
-            </p>
+      <ClientOnly>
+        <Card
+          size="medium"
+          className="text-center bg-white/80 backdrop-blur-sm"
+        >
+          <div className="space-y-4">
+            <div className="text-4xl">💚</div>
+            <div>
+              <h3 className="font-title text-lg text-text-color mb-2">
+                No favorite teas yet!
+              </h3>
+              <p className="font-body text-text-color/70 text-sm">
+                Mark some teas as favorites to see them here!
+              </p>
+            </div>
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() => router.push("/closet")}
+            >
+              Explore Teas
+            </Button>
           </div>
-          <Button
-            variant="secondary"
-            size="sm"
-            onClick={() => router.push("/closet")}
-          >
-            Go to Collection
-          </Button>
-        </div>
-      </Card>
+        </Card>
+      </ClientOnly>
     );
   }
 
   return (
-    <Card size="medium" className="bg-white/80 backdrop-blur-sm">
-      <div className="space-y-6">
+    <ClientOnly>
+      <Card size="large" className="space-y-6">
         <div className="flex items-center justify-between">
-          <h3 className="font-title text-xl text-text-color">Favorite Teas</h3>
-          <Button
-            variant="ghost"
-            size="sm"
+          <h3 className="font-title text-xl font-semibold text-text-color">
+            Favorite Teas
+          </h3>
+          <button
             onClick={handleViewAll}
-            className="text-text-color/70 hover:text-text-color"
+            className="text-sm font-medium text-primary-green hover:text-primary-green/80 transition-colors"
           >
-            View All ({favoriteTeas.length})
-            <IconArrowRight size={16} />
-          </Button>
+            View All
+          </button>
         </div>
 
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.4 }}
+          transition={{ delay: 0.2, duration: 0.4 }}
         >
           <TeaGrid
             teas={previewTeas}
-            size="compact"
+            size="small"
             onFavoriteToggle={toggleFavorite}
-            onEdit={navigateToTeaEdit}
-            onClick={navigateToTea}
+            onClick={handleTeaClick}
             staggerDelay={0.1}
             className="space-y-2"
           />
@@ -99,7 +104,7 @@ export const ProfileTeaList: React.FC<ProfileTeaListProps> = ({
             </Button>
           </motion.div>
         )}
-      </div>
-    </Card>
+      </Card>
+    </ClientOnly>
   );
 };

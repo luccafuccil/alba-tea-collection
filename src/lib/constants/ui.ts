@@ -13,26 +13,6 @@ export const STORAGE_KEYS = {
   coords: "alba_coords",
 } as const;
 
-export const ANIMATIONS = {
-  modal: {
-    initial: { opacity: 0, scale: 0.95, y: 20 },
-    animate: { opacity: 1, scale: 1, y: 0 },
-    exit: { opacity: 0, scale: 0.95, y: 20 },
-    transition: { duration: 0.2 },
-  },
-  slideInRight: {
-    initial: { x: "100%" },
-    animate: { x: 0 },
-    exit: { x: "100%" },
-    transition: { type: "tween", duration: 0.3 },
-  },
-  fadeIn: {
-    initial: { opacity: 0 },
-    animate: { opacity: 1 },
-    exit: { opacity: 0 },
-  },
-} as const;
-
 export const WEATHER_CODES = {
   0: "clear",
   1: "mainly-clear",

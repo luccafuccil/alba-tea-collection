@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useLocalStorage } from "./use-local-storage";
 import { Profile } from "@/lib/types";
 import { STORAGE_KEYS } from "@/lib/constants/ui";
@@ -13,7 +13,7 @@ export function useProfile(profileId?: string) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchProfile = async (id?: string) => {
+  const fetchProfile = useCallback(async (id?: string) => {
     setLoading(true);
     setError(null);
 
@@ -28,7 +28,7 @@ export function useProfile(profileId?: string) {
             name: profileData.name,
             photo: profileData.photo,
             level: profileData.level,
-            createdAt: new Date("2024-01-15"), // Default creation date
+            createdAt: new Date("2024-01-15"),
           };
 
           setProfile(completeProfile);
@@ -60,34 +60,39 @@ export function useProfile(profileId?: string) {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const updateProfile = async (updates: Partial<Profile>) => {
-    if (!profile) return;
+  const updateProfile = useCallback(
+    async (updates: Partial<Profile>) => {
+      if (!profile) return;
 
-    setLoading(true);
-    setError(null);
+      setLoading(true);
+      setError(null);
 
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 300));
+      try {
+        await new Promise((resolve) => setTimeout(resolve, 300));
 
-      const updatedProfile = {
-        ...profile,
-        ...updates,
-        updatedAt: new Date(),
-      };
+        const updatedProfile = {
+          ...profile,
+          ...updates,
+          updatedAt: new Date(),
+        };
 
-      setProfile(updatedProfile);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to update profile");
-    } finally {
-      setLoading(false);
-    }
-  };
+        setProfile(updatedProfile);
+      } catch (err) {
+        setError(
+          err instanceof Error ? err.message : "Failed to update profile"
+        );
+      } finally {
+        setLoading(false);
+      }
+    },
+    [profile, setProfile]
+  );
 
   useEffect(() => {
     fetchProfile(profileId);
-  }, [profileId]);
+  }, [profileId, fetchProfile]);
 
   return {
     profile,

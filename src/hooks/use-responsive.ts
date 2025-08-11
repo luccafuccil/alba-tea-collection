@@ -9,6 +9,10 @@ export function useResponsive(
   const [isAboveBreakpoint, setIsAboveBreakpoint] = useState(false);
 
   useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
     const checkBreakpoint = () => {
       setIsAboveBreakpoint(window.innerWidth >= BREAKPOINTS[breakpoint]);
     };
@@ -23,16 +27,30 @@ export function useResponsive(
   return isAboveBreakpoint;
 }
 
-export const useIsMobile = () => !useResponsive("tablet");
-export const useIsTablet = () =>
-  useResponsive("tablet") && !useResponsive("desktop");
-export const useIsDesktop = () => useResponsive("desktop");
+export const useIsMobile = () => {
+  const isTabletOrAbove = useResponsive("tablet");
+  return !isTabletOrAbove;
+};
+
+export const useIsTablet = () => {
+  const isTablet = useResponsive("tablet");
+  const isDesktop = useResponsive("desktop");
+  return isTablet && !isDesktop;
+};
+
+export const useIsDesktop = () => {
+  return useResponsive("desktop");
+};
 
 export function useCurrentBreakpoint() {
   const [breakpoint, setBreakpoint] =
     useState<keyof typeof BREAKPOINTS>("mobile");
 
   useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
     const updateBreakpoint = () => {
       const width = window.innerWidth;
 

@@ -1,8 +1,7 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useId } from "react";
 import { cn } from "@/lib/utils";
 import { FormField } from "@/lib/types";
 import { Button } from "./button";
-import { generateShortId } from "@/lib/id-generator";
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   error?: string;
@@ -18,7 +17,8 @@ export const Input: React.FC<InputProps> = ({
   id,
   ...props
 }) => {
-  const inputId = id || generateShortId("input");
+  const generatedId = useId();
+  const inputId = id || generatedId;
 
   return (
     <div className="space-y-2">
@@ -63,7 +63,8 @@ export const Textarea: React.FC<TextareaProps> = ({
   id,
   ...props
 }) => {
-  const textareaId = id || generateShortId("textarea");
+  const generatedId = useId();
+  const textareaId = id || generatedId;
 
   return (
     <div className="space-y-2">
@@ -110,7 +111,8 @@ export const Select: React.FC<SelectProps> = ({
   id,
   ...props
 }) => {
-  const selectId = id || generateShortId("select");
+  const generatedId = useId();
+  const selectId = id || generatedId;
 
   return (
     <div className="space-y-2">
@@ -159,7 +161,8 @@ export const Checkbox: React.FC<CheckboxProps> = ({
   id,
   ...props
 }) => {
-  const checkboxId = id || generateShortId("checkbox");
+  const generatedId = useId();
+  const checkboxId = id || generatedId;
 
   return (
     <div className="space-y-2">
@@ -187,7 +190,7 @@ export const Checkbox: React.FC<CheckboxProps> = ({
   );
 };
 
-interface FormProps<T extends Record<string, any>> {
+interface FormProps<T extends Record<string, unknown>> {
   fields: FormField[];
   onSubmit: (data: T) => void;
   onCancel?: () => void;
@@ -199,7 +202,7 @@ interface FormProps<T extends Record<string, any>> {
   className?: string;
 }
 
-export const Form = <T extends Record<string, any>>({
+export const Form = <T extends Record<string, unknown>>({
   fields,
   onSubmit,
   onCancel,
@@ -210,12 +213,13 @@ export const Form = <T extends Record<string, any>>({
   isLoading = false,
   className,
 }: FormProps<T>) => {
-  const [formData, setFormData] = useState<Record<string, any>>(initialData);
+  const [formData, setFormData] =
+    useState<Record<string, unknown>>(initialData);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [touched, setTouched] = useState<Record<string, boolean>>({});
 
   const handleChange = useCallback(
-    (name: string, value: any) => {
+    (name: string, value: unknown) => {
       setFormData((prev) => ({ ...prev, [name]: value }));
 
       if (errors[name]) {
@@ -310,7 +314,7 @@ export const Form = <T extends Record<string, any>>({
               key={field.name}
               {...commonProps}
               type={field.type}
-              value={formData[field.name] || ""}
+              value={(formData[field.name] as string) || ""}
               placeholder={field.placeholder}
               onChange={(e) => handleChange(field.name, e.target.value)}
             />
@@ -321,7 +325,7 @@ export const Form = <T extends Record<string, any>>({
             <Textarea
               key={field.name}
               {...commonProps}
-              value={formData[field.name] || ""}
+              value={(formData[field.name] as string) || ""}
               placeholder={field.placeholder}
               onChange={(e) => handleChange(field.name, e.target.value)}
             />
@@ -333,7 +337,7 @@ export const Form = <T extends Record<string, any>>({
               key={field.name}
               {...commonProps}
               options={field.options || []}
-              value={formData[field.name] || ""}
+              value={(formData[field.name] as string) || ""}
               onChange={(e) => handleChange(field.name, e.target.value)}
             />
           );
@@ -343,7 +347,7 @@ export const Form = <T extends Record<string, any>>({
             <Checkbox
               key={field.name}
               {...commonProps}
-              checked={formData[field.name] || false}
+              checked={(formData[field.name] as boolean) || false}
               onChange={(e) => handleChange(field.name, e.target.checked)}
             />
           );
@@ -361,11 +365,12 @@ export const Form = <T extends Record<string, any>>({
                     key={`${field.name}-${option.value}`}
                     id={`${field.name}-${option.value}`}
                     label={option.label}
-                    checked={(formData[field.name] || []).includes(
-                      option.value
-                    )}
+                    checked={(
+                      (formData[field.name] as string[]) || []
+                    ).includes(option.value)}
                     onChange={(e) => {
-                      const currentValues = formData[field.name] || [];
+                      const currentValues =
+                        (formData[field.name] as string[]) || [];
                       const newValues = e.target.checked
                         ? [...currentValues, option.value]
                         : currentValues.filter(

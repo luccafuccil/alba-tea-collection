@@ -44,7 +44,7 @@ const FilterButton: React.FC<FilterButtonProps> = ({
         isActive
           ? "bg-(--primary-green) text-(--primary-brown)"
           : "bg-white text-(--primary-brown) hover:bg-gray-50 hover:border-(--primary-green)",
-        "focus:outline-none focus:ring-2 focus:ring-(--primary-green) focus:ring-offset-2",
+        "focus:outline-none",
         className
       )}
     >

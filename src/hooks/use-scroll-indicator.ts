@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, RefObject } from "react";
+import { useState, useEffect, RefObject, useCallback } from "react";
 import { useIsMobile } from "./use-responsive";
 
 interface ScrollIndicatorState {
@@ -27,7 +27,7 @@ export function useScrollIndicator<T extends HTMLElement>(
 
   const isMobile = useIsMobile();
 
-  const checkScrollPosition = () => {
+  const checkScrollPosition = useCallback(() => {
     if (!containerRef?.current) return;
 
     const { scrollLeft, scrollWidth, clientWidth } = containerRef.current;
@@ -40,7 +40,7 @@ export function useScrollIndicator<T extends HTMLElement>(
       canScrollLeft,
       canScrollRight,
     });
-  };
+  }, [containerRef, isMobile]);
 
   useEffect(() => {
     const container = containerRef?.current;
@@ -57,7 +57,7 @@ export function useScrollIndicator<T extends HTMLElement>(
       container.removeEventListener("scroll", checkScrollPosition);
       window.removeEventListener("resize", checkScrollPosition);
     };
-  }, [containerRef, isMobile]);
+  }, [containerRef, isMobile, checkScrollPosition]);
 
   const scrollLeft = () => {
     if (!containerRef?.current) return;

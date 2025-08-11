@@ -1,11 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { motion } from "framer-motion";
 import { Container } from "@/components/ui/container";
-import { useIsDesktop, useIsMobile } from "@/hooks/use-responsive";
+import { useIsDesktop } from "@/hooks/use-responsive";
 import { ProfileDropdown } from "./profile-dropdown";
 import { MobileMenu } from "./mobile-menu";
 import { cn } from "@/lib/utils";
@@ -17,30 +16,22 @@ interface HeaderProps {
 export const Header: React.FC<HeaderProps> = ({ className }) => {
   const pathname = usePathname();
   const isDesktop = useIsDesktop();
-  const isMobile = useIsMobile();
 
   return (
-    <motion.header
-      initial={{ y: -100, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.6, ease: "easeOut" }}
+    <header
       className={cn(
         "fixed top-0 left-0 right-0 z-50",
         "bg-background-color/80 backdrop-blur-md",
-        "border-b border-white/20",
+        "border-b border-white/20 animate-in slide-in-from-top duration-500",
         className
       )}
     >
       <Container size="full" padding="lg">
         <div className="flex items-center justify-between py-4">
           <Link href="/" className="group">
-            <motion.h1
-              className="font-title text-2xl md:text-3xl text-text-color font-medium"
-              whileHover={{ scale: 1.05 }}
-              transition={{ type: "spring", stiffness: 400, damping: 17 }}
-            >
+            <h1 className="font-title text-2xl md:text-3xl text-text-color font-medium hover:scale-105 transition-transform duration-200">
               Alba
-            </motion.h1>
+            </h1>
           </Link>
 
           {isDesktop && (
@@ -62,7 +53,7 @@ export const Header: React.FC<HeaderProps> = ({ className }) => {
           </div>
         </div>
       </Container>
-    </motion.header>
+    </header>
   );
 };
 
@@ -92,11 +83,7 @@ const NavLink: React.FC<NavLinkProps> = ({
   >
     {children}
     {active && (
-      <motion.div
-        layoutId="activeTab"
-        className="absolute inset-0 bg-primary-green/20 rounded-full -z-10"
-        transition={{ type: "spring", stiffness: 500, damping: 30 }}
-      />
+      <div className="absolute inset-0 bg-primary-green/20 rounded-full -z-10 animate-in fade-in duration-200" />
     )}
   </Link>
 );

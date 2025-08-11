@@ -1,8 +1,8 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { v4 as uuidv4 } from "uuid";
 import { Tea, TeaType } from "@/lib/types";
 import { STORAGE_KEYS } from "@/lib/constants/ui";
-import { generateUUID } from "@/lib/id-generator";
 
 interface TeaStore {
   teas: Tea[];
@@ -11,6 +11,7 @@ interface TeaStore {
   updateTea: (id: string, updates: Partial<Tea>) => void;
   deleteTea: (id: string) => void;
   toggleFavorite: (id: string) => void;
+  clearAllTeas: () => void;
 
   getTea: (id: string) => Tea | undefined;
   getTeasByType: (type: TeaType) => Tea[];
@@ -26,7 +27,7 @@ export const useTeaStore = create<TeaStore>()(
       addTea: (teaData) => {
         const newTea: Tea = {
           ...teaData,
-          id: generateUUID(),
+          id: uuidv4(),
           createdAt: new Date(),
           updatedAt: new Date(),
         };
@@ -58,6 +59,10 @@ export const useTeaStore = create<TeaStore>()(
               : tea
           ),
         }));
+      },
+
+      clearAllTeas: () => {
+        set({ teas: [] });
       },
 
       getTea: (id) => {

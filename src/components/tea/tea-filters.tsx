@@ -68,7 +68,6 @@ const TeaFilters: React.FC<TeaFiltersProps> = ({
         style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
       >
         {filters.map((filter) => {
-          const Icon = filter.icon;
           const isActive = selectedFilter === filter.value;
           const count =
             showCounts && filterCounts ? filterCounts[filter.value] : undefined;
@@ -89,19 +88,21 @@ const TeaFilters: React.FC<TeaFiltersProps> = ({
         })}
 
         {onReverseChange && (
-          <button
-            onClick={() => onReverseChange(!reverse)}
-            className={cn(
-              "flex-shrink-0 ml-2 p-2 rounded-full border-2 transition-all duration-200",
-              "hover:scale-105 active:scale-95 hover:border-(--primary-brown)",
-              !reverse
-                ? "border-(--primary-brown) bg-(--primary-brown) text-white"
-                : "border-transparent bg-white text-(--primary-brown)"
-            )}
-            title={reverse ? "Sort oldest first" : "Sort newest first"}
-          >
-            <IconArrowsSort size={16} />
-          </button>
+          <div className="p-1">
+            <button
+              onClick={() => onReverseChange(!reverse)}
+              className={cn(
+                "flex-shrink-0 ml-2 p-2 rounded-full border-2 transition-all duration-200",
+                "hover:scale-105 active:scale-95 hover:border-(--primary-brown)",
+                !reverse
+                  ? "border-(--primary-brown) bg-(--primary-brown) text-white"
+                  : "border-transparent bg-white text-(--primary-brown)"
+              )}
+              title={reverse ? "Sort oldest first" : "Sort newest first"}
+            >
+              <IconArrowsSort size={16} />
+            </button>
+          </div>
         )}
       </div>
 

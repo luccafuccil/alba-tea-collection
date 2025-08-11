@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { IconHeart, IconEdit, IconTrash, IconClock } from "@tabler/icons-react";
 import {
@@ -14,7 +13,7 @@ import {
 import { Button, IconButton } from "@/components/ui/button";
 import TiltWrapper from "@/components/ui/tilt-wrapper";
 import TeaImage from "./tea-image";
-import { useIsDesktop, useIsMobile } from "@/hooks/use-responsive";
+import { useIsDesktop } from "@/hooks/use-responsive";
 import { Tea, CardSize } from "@/lib/types";
 import { TEA_TYPE_IMAGES } from "@/lib/constants/tea";
 import { cn } from "@/lib/utils";
@@ -48,7 +47,6 @@ const TeaCard: React.FC<TeaCardProps> = ({
 }) => {
   const router = useRouter();
   const isDesktop = useIsDesktop();
-  const isMobile = useIsMobile();
 
   const isClickable = !disableInteractions && onClick;
   const isInteractive = !disableInteractions && !isClickable;

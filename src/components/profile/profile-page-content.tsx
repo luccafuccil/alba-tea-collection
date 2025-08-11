@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { Container } from "@/components/ui/container";
 import { LoadingSpinner } from "@/components/ui/loading-overlay";
 import { Card } from "@/components/ui/card";
+import { ClientOnly } from "@/components/ui/client-only";
 import { ProfileGreeting } from "./profile-greeting";
 import { ProfileTeaList } from "./profile-tea-list";
 import { WeatherWidget } from "@/components/widgets/weather-widget";
@@ -51,27 +52,35 @@ export const ProfilePageContent: React.FC<ProfilePageContentProps> = ({
   }
 
   return (
-    <Container size="xl" className="py-8">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="lg:col-span-2"
-        >
-          <ProfileGreeting profile={profile} />
-        </motion.div>
+    <ClientOnly
+      fallback={
+        <div className="flex items-center justify-center min-h-[50vh]">
+          <LoadingSpinner size="lg" />
+        </div>
+      }
+    >
+      <Container size="xl" className="py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="lg:col-span-2"
+          >
+            <ProfileGreeting profile={profile} />
+          </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.6 }}
-          className="space-y-6"
-        >
-          <WeatherWidget />
-          <ProfileTeaList profileId={profileId} />
-        </motion.div>
-      </div>
-    </Container>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.6 }}
+            className="space-y-6"
+          >
+            <WeatherWidget />
+            <ProfileTeaList profileId={profileId} />
+          </motion.div>
+        </div>
+      </Container>
+    </ClientOnly>
   );
 };

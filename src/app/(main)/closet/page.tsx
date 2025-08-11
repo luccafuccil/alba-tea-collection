@@ -12,13 +12,7 @@ export const metadata: Metadata = {
 export default function ClosetPage() {
   return (
     <PageContainer className="bg-gradient-closet">
-      <Suspense
-        fallback={
-          <div className="flex items-center justify-center min-h-[400px]">
-            <LoadingSpinner size="lg" />
-          </div>
-        }
-      >
+      <Suspense fallback={<LoadingSpinner />}>
         <TeaClosetContent />
       </Suspense>
     </PageContainer>

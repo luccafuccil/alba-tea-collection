@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { motion } from "framer-motion";
 import { Container } from "@/components/ui/container";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -11,35 +10,16 @@ export default function RitualsPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-orange/20 via-primary-green/10 to-primary-blue/20">
       <Container size="lg" className="py-20">
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="text-center space-y-8"
-        >
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ delay: 0.2, type: "spring", stiffness: 300 }}
-            className="text-6xl"
-          >
+        <div className="text-center space-y-8 animate-in fade-in slide-in-from-bottom duration-700">
+          <div className="text-6xl animate-in zoom-in delay-200 duration-500">
             🧘‍♀️
-          </motion.div>
+          </div>
 
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.6 }}
-            className="font-title text-3xl md:text-4xl text-text-color"
-          >
+          <h1 className="font-title text-3xl md:text-4xl text-text-color animate-in fade-in delay-300 duration-500">
             Tea Rituals
-          </motion.h1>
+          </h1>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4, duration: 0.6 }}
-          >
+          <div className="animate-in fade-in delay-400 duration-500">
             <Card
               size="medium"
               className="max-w-xl lg:max-w-2xl mx-auto bg-white/80 backdrop-blur-sm"
@@ -61,12 +41,7 @@ export default function RitualsPage() {
                 </div>
 
                 <div className="grid grid-cols-2 gap-3 pt-4">
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.6, duration: 0.4 }}
-                    className="text-center space-y-1"
-                  >
+                  <div className="text-center space-y-1 animate-in fade-in delay-600 duration-300">
                     <IconPencil
                       className="mx-auto text-primary-blue"
                       size={20}
@@ -74,14 +49,9 @@ export default function RitualsPage() {
                     <p className="font-body text-xs text-text-color/60">
                       Guided Ceremonies
                     </p>
-                  </motion.div>
+                  </div>
 
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.7, duration: 0.4 }}
-                    className="text-center space-y-1"
-                  >
+                  <div className="text-center space-y-1 animate-in fade-in delay-700 duration-300">
                     <IconLeaf
                       className="mx-auto text-primary-green"
                       size={20}
@@ -89,14 +59,9 @@ export default function RitualsPage() {
                     <p className="font-body text-xs text-text-color/60">
                       Mindful Brewing
                     </p>
-                  </motion.div>
+                  </div>
 
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.8, duration: 0.4 }}
-                    className="text-center space-y-1"
-                  >
+                  <div className="text-center space-y-1 animate-in fade-in delay-800 duration-300">
                     <IconHeart
                       className="mx-auto text-primary-orange"
                       size={20}
@@ -104,14 +69,9 @@ export default function RitualsPage() {
                     <p className="font-body text-xs text-text-color/60">
                       Personal Moments
                     </p>
-                  </motion.div>
+                  </div>
 
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.9, duration: 0.4 }}
-                    className="text-center space-y-1"
-                  >
+                  <div className="text-center space-y-1 animate-in fade-in delay-900 duration-300">
                     <IconBook
                       className="mx-auto text-text-color/60"
                       size={20}
@@ -119,26 +79,21 @@ export default function RitualsPage() {
                     <p className="font-body text-xs text-text-color/60">
                       Ritual Library
                     </p>
-                  </motion.div>
+                  </div>
                 </div>
 
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 1.0, duration: 0.4 }}
-                  className="pt-4"
-                >
+                <div className="pt-4 animate-in fade-in delay-1000 duration-300">
                   <Button
                     variant="secondary"
                     onClick={() => window.history.back()}
                   >
                     Back to Collection
                   </Button>
-                </motion.div>
+                </div>
               </div>
             </Card>
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
       </Container>
     </div>
   );

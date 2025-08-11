@@ -1,17 +1,10 @@
 "use client";
 
-import React, { useState, useRef } from "react";
-import { useRouter } from "next/navigation";
+import React from "react";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  IconUser,
-  IconMug,
-  IconShoppingCart,
-  IconLabel,
-  IconSettings,
-} from "@tabler/icons-react";
-import { useClickOutside } from "@/hooks/use-click-outside";
 import { cn } from "@/lib/utils";
+import { useProfileDropdown } from "@/hooks/use-profile-dropdown";
 import profileData from "@/../public/profile.json";
 
 // Static profile data for now
@@ -23,34 +16,14 @@ const mockProfile = {
 };
 
 export const ProfileDropdown: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const router = useRouter();
-  const dropdownRef = useRef<HTMLDivElement>(null);
-
-  useClickOutside(dropdownRef, () => setIsOpen(false));
-
-  const handleProfileClick = () => {
-    router.push(`/profile/${mockProfile.id}`);
-    setIsOpen(false);
-  };
-
-  const menuItems = [
-    { icon: IconUser, label: "My Profile", href: `/profile/${mockProfile.id}` },
-    { icon: IconMug, label: "My Tea Collection", href: "/closet" },
-    {
-      icon: IconShoppingCart,
-      label: "Shop for Teas",
-      href: "/shop",
-      badge: "soon",
-    },
-    {
-      icon: IconLabel,
-      label: "Saved Programs",
-      href: "/programs",
-      badge: "soon",
-    },
-    { icon: IconSettings, label: "Settings", href: "/settings", badge: "soon" },
-  ];
+  const {
+    isOpen,
+    setIsOpen,
+    dropdownRef,
+    menuItems,
+    handleItemClick,
+    handleProfileClick,
+  } = useProfileDropdown(mockProfile.id);
 
   return (
     <div ref={dropdownRef} className="relative">
@@ -58,14 +31,16 @@ export const ProfileDropdown: React.FC = () => {
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
           "relative w-10 h-10 rounded-full overflow-hidden",
-          "ring-2 ring-transparent hover:ring-primary-green/50",
+          "ring-2 ring-transparent hover:ring-(--primary-green)/50",
           "transition-all duration-200",
-          isOpen && "ring-primary-green"
+          isOpen && "ring-2 ring-(--primary-green)"
         )}
       >
-        <img
+        <Image
           src={mockProfile.photo}
           alt="Profile"
+          width={40}
+          height={40}
           className="w-full h-full object-cover"
           onError={(e) => {
             e.currentTarget.src = "/images/profile/generic-profile.png";
@@ -89,9 +64,11 @@ export const ProfileDropdown: React.FC = () => {
             <div className="px-6 pb-4 border-b border-gray-100">
               <div className="flex items-center gap-3">
                 <div className="relative w-12 h-12 rounded-full overflow-hidden">
-                  <img
+                  <Image
                     src={mockProfile.photo}
                     alt="Profile"
+                    width={48}
+                    height={48}
                     className="w-full h-full object-cover cursor-pointer"
                     onClick={handleProfileClick}
                     onError={(e) => {
@@ -101,7 +78,7 @@ export const ProfileDropdown: React.FC = () => {
                   />
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-title text-lg text-text-color">
+                  <h3 className="text-lg text-(--primary-brown)">
                     Hello,
                     <br />
                     {mockProfile.name}
@@ -121,12 +98,12 @@ export const ProfileDropdown: React.FC = () => {
             <div className="py-2">
               {menuItems.map((item) => (
                 <DropdownItem
-                  key={item.label}
+                  key={item.id}
                   icon={item.icon}
                   label={item.label}
-                  href={item.href}
                   badge={item.badge}
-                  onClick={() => setIsOpen(false)}
+                  isActive={item.isActive}
+                  onClick={() => handleItemClick(item)}
                 />
               ))}
             </div>
@@ -140,24 +117,19 @@ export const ProfileDropdown: React.FC = () => {
 interface DropdownItemProps {
   icon: React.ComponentType<{ size?: number; className?: string }>;
   label: string;
-  href: string;
   badge?: string;
+  isActive?: boolean;
   onClick?: () => void;
 }
 
 const DropdownItem: React.FC<DropdownItemProps> = ({
   icon: Icon,
   label,
-  href,
   badge,
+  isActive = false,
   onClick,
 }) => {
-  const router = useRouter();
-
   const handleClick = () => {
-    if (badge !== "soon") {
-      router.push(href);
-    }
     onClick?.();
   };
 
@@ -167,20 +139,40 @@ const DropdownItem: React.FC<DropdownItemProps> = ({
       disabled={badge === "soon"}
       className={cn(
         "w-full flex items-center gap-3 px-6 py-3 text-left",
-        "hover:bg-gray-50 transition-colors",
+        "transition-colors relative",
         "disabled:opacity-50 disabled:cursor-not-allowed",
-        "group"
+        "group",
+        isActive
+          ? "bg-(--primary-green)/10 text-(--primary-brown)"
+          : "hover:bg-gray-50"
       )}
     >
       <Icon
         size={20}
-        className="text-text-color/60 group-hover:text-text-color"
+        className={cn(
+          "transition-colors",
+          isActive
+            ? "text-(--primary-brown)"
+            : "text-(--primary-brown)/60 group-hover:text-(--primary-brown)"
+        )}
       />
-      <span className="font-body text-text-color flex-1">{label}</span>
+      <span
+        className={cn(
+          "font-body transition-colors flex-1",
+          isActive
+            ? "text-(--primary-brown) font-medium"
+            : "text-(--primary-brown) group-hover:font-medium"
+        )}
+      >
+        {label}
+      </span>
       {badge && (
         <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
           {badge}
         </span>
+      )}
+      {isActive && (
+        <div className="absolute left-0 top-0 bottom-0 w-1 bg-(--primary-green) rounded-r-full" />
       )}
     </button>
   );

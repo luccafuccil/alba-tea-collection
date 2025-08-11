@@ -10,15 +10,15 @@ export const useTeaNavigation = () => {
   };
 
   const navigateToTeaEdit = (id: string) => {
-    router.push(`/closet/tea/${id}/edit`);
+    router.push(`/tea/${id}/edit`);
   };
 
   const navigateToTeaDelete = (id: string) => {
-    router.push(`/closet/tea/${id}/delete`);
+    router.push(`/tea/${id}/delete`);
   };
 
   const navigateToNewTea = () => {
-    router.push("/closet/tea/new");
+    router.push("/tea/new");
   };
 
   const navigateToCloset = (filter?: string) => {

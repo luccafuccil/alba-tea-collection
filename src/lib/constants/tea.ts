@@ -32,7 +32,7 @@ export const TEA_FORM_FIELDS: FormField[] = [
     type: "text",
     required: true,
     placeholder: "Enter tea name...",
-    validate: (value: any) => {
+    validate: (value: unknown) => {
       if (!value || typeof value !== "string" || !value.trim()) {
         return "Name is required";
       }
@@ -56,7 +56,7 @@ export const TEA_FORM_FIELDS: FormField[] = [
     label: "Brewing Time (minutes)",
     type: "number",
     placeholder: "3-5 minutes typical",
-    validate: (value: any) => {
+    validate: (value: unknown) => {
       if (value !== undefined && value !== null && value !== "") {
         const numValue = Number(value);
         if (isNaN(numValue) || numValue < 0 || numValue > 30) {
@@ -81,7 +81,7 @@ export const TEA_FORM_FIELDS: FormField[] = [
     label: "Description or Notes",
     type: "textarea",
     placeholder: "Describe this tea...",
-    validate: (value: any) => {
+    validate: (value: unknown) => {
       if (value && typeof value === "string") {
         const words = value.trim().split(/\s+/);
         if (words.length > 30) return "Description should be 30 words or less";
@@ -93,6 +93,6 @@ export const TEA_FORM_FIELDS: FormField[] = [
     name: "tastingNotes",
     label: "Tasting Notes",
     type: "text",
-    placeholder: "Floral, citrus, earthy... (separated by commas)",
+    placeholder: "Floral, citrus, earthy...",
   },
 ];
