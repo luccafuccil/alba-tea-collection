@@ -83,7 +83,7 @@ export const ProfileTeaList: React.FC<ProfileTeaListProps> = () => {
         >
           <TeaGrid
             teas={previewTeas}
-            size="small"
+            size="compact"
             onFavoriteToggle={toggleFavorite}
             onClick={handleTeaClick}
             staggerDelay={0.1}
